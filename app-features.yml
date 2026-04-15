@@ -1,0 +1,62 @@
+app_name: "PixelPerfect PWA"
+description: "A browser-based Progressive Web App for image editing (crop, rotate, watermark, compress) without server-side processing."
+theme: "Sleek Interface (Light & Dark Mode, auto-adapts to system preference)"
+
+core_technologies:
+  - React 19
+  - Vite
+  - Tailwind CSS
+  - react-image-crop
+  - vite-plugin-pwa
+  - HTML5 Canvas API (for image processing)
+
+features:
+  crop:
+    status: "implemented"
+    details:
+      - Freeform cropping
+      - Fixed aspect ratios (1:1, 4:3, 3:4, 16:9, 9:16)
+      - Auto-centering crop box on aspect ratio change (using centerCrop and makeAspectCrop)
+      - Clear crop & Center 50% quick actions
+  
+  rotate:
+    status: "implemented"
+    details:
+      - Arbitrary rotation (-180 to 180 degrees) via slider and number input
+      - Magnetic snapping to 90-degree increments (±5 degrees)
+      - Quick rotation buttons (-90, 0, +90)
+      - Canvas bounding box auto-adjusts to prevent clipping during rotation
+  
+  watermark:
+    status: "implemented"
+    details:
+      - Custom text input
+      - Color picker
+      - Font family selection (Sans Serif, Serif, Monospace, Impact, Comic Sans)
+      - Relative size adjustment (1% to 20% of image width using clamp/vw for preview)
+      - 9-grid position selector (TL, TC, TR, CL, C, CR, BL, BC, BR)
+      - Automatic drop shadow for contrast
+  
+  i18n:
+    status: "implemented"
+    details:
+      - Multi-language support (English, Traditional Chinese)
+      - Auto-detects browser language
+      - Language switcher in header with localStorage persistence
+      
+  export_compress:
+    status: "implemented"
+    details:
+      - JPEG compression quality adjustment (10% to 100%)
+      - Max width constraint for downscaling
+      - Real-time output preview (final dimensions and estimated file size)
+      - Download processed image via Canvas API
+      - Live WYSIWYG Canvas Preview for accurate representation of final output
+
+llm_development_rules:
+  - "PRESERVE EXISTING FUNCTIONALITY: When modifying a specific feature, do not alter the state management or UI of other tabs."
+  - "CANVAS PROCESSING: The `updateCanvas` function is critical. It directly renders to a live `<canvas>` element (`previewCanvasRef`) to ensure WYSIWYG preview. Any new transformations must be carefully integrated into the existing translate/rotate/drawImage sequence. Do not break the bounding box calculations."
+  - "CROP STATE: Crop dimensions are stored as percentages (`completedCrop.unit === '%'`) to prevent calculation errors when the source image is hidden or resized."
+  - "STYLING: Maintain the Sleek Interface dark theme (#111214 background, #1e2023 panels, #3b82f6 accents). Do not introduce new color schemes or restructure the layout unless explicitly requested."
+  - "PWA: Do not remove the vite-plugin-pwa configuration or the service worker registration in main.tsx."
+  - "CLIENT-SIDE ONLY: All image processing must remain in the browser. Do not add backend dependencies for image manipulation."

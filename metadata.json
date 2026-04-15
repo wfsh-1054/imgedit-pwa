@@ -1,0 +1,6 @@
+{
+  "name": "ImgEdit PWA",
+  "description": "A PWA tool for cropping, rotating, watermarking, and compressing images.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
