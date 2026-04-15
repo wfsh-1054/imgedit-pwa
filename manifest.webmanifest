@@ -1,0 +1,1 @@
+{"name":"Image Editor PWA","short_name":"ImgEdit","description":"A PWA tool for cropping, rotating, watermarking, and compressing images.","start_url":"/imgedit-pwa/","display":"standalone","background_color":"#ffffff","theme_color":"#ffffff","lang":"en","scope":"/imgedit-pwa/","icons":[{"src":"icon.svg","sizes":"512x512","type":"image/svg+xml","purpose":"any maskable"}]}
