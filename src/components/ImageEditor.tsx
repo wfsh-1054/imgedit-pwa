@@ -73,6 +73,7 @@ export default function ImageEditor() {
   });
 
   const [currentLang, setCurrentLang] = useState<'en' | 'zh'>('en');
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (langPref === 'system') {
@@ -88,12 +89,38 @@ export default function ImageEditor() {
 
   const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setCrop(undefined);
-      const reader = new FileReader();
-      reader.addEventListener('load', () =>
-        setImgSrc(reader.result?.toString() || '')
-      );
-      reader.readAsDataURL(e.target.files[0]);
+      handleFile(e.target.files[0]);
+    }
+  };
+
+  const handleFile = (file: File) => {
+    if (!file.type.startsWith('image/')) return;
+    setCrop(undefined);
+    const reader = new FileReader();
+    reader.addEventListener('load', () =>
+      setImgSrc(reader.result?.toString() || '')
+    );
+    reader.readAsDataURL(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFile(e.dataTransfer.files[0]);
     }
   };
 
@@ -295,8 +322,13 @@ export default function ImageEditor() {
       <main className="flex-1 flex overflow-hidden">
         {!imgSrc ? (
           <div className="flex-1 flex items-center justify-center p-8 bg-slate-100/50 dark:bg-[#0a0a0b] transition-colors duration-200">
-            <label className="flex flex-col items-center justify-center w-full max-w-2xl h-96 border border-slate-300 dark:border-[#2d3139] rounded-md bg-white dark:bg-[#1e2023] hover:border-blue-500 dark:hover:border-blue-500 transition-all cursor-pointer group">
-              <div className="bg-slate-50 dark:bg-[#141619] p-4 rounded-md mb-4 group-hover:scale-110 transition-transform">
+            <label 
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`flex flex-col items-center justify-center w-full max-w-2xl h-96 border-2 border-dashed rounded-md transition-all cursor-pointer group ${isDragging ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-500/10' : 'border-slate-300 dark:border-[#2d3139] bg-white dark:bg-[#1e2023] hover:border-blue-500 dark:hover:border-blue-500'}`}
+            >
+              <div className={`p-4 rounded-md mb-4 transition-transform ${isDragging ? 'bg-blue-100 dark:bg-blue-500/20 scale-110' : 'bg-slate-50 dark:bg-[#141619] group-hover:scale-110'}`}>
                 <Upload className="w-8 h-8 text-blue-500" />
               </div>
               <p className="text-[14px] font-semibold text-slate-900 dark:text-slate-200 mb-2">{t.uploadTitle}</p>
