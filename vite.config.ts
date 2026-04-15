@@ -6,7 +6,13 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
+  
+  // 自動處理 GitHub Pages 的子目錄路徑 (例如: https://username.github.io/repo-name/)
+  const githubRepo = process.env.GITHUB_REPOSITORY;
+  const basePath = githubRepo ? `/${githubRepo.split('/')[1]}/` : '/';
+
   return {
+    base: basePath,
     plugins: [
       react(), 
       tailwindcss(),
